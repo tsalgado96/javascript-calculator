@@ -1,0 +1,109 @@
+@import 'build-calculator.scss';
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+$bgColor: #495057;
+$displayBgColor: #252422;
+$numberColor: #403d39;
+$operatorColor: #62929e;
+$clearBtnColor: #eb5e28;
+$primaryFontColor: #fffcf2;
+$displayRightPadding: 20px;
+
+body {
+  margin: 0;
+}
+
+.App {
+  background-color: $bgColor;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#container {
+  width: 400px;
+  height: 600px;
+  margin: 20px;
+}
+
+#display-container {
+  background-color: $displayBgColor;
+  min-height: 70px;
+  font-family: 'Share Tech Mono', monospace;
+  display: grid;
+  grid-template-rows: 1fr 2fr;
+}
+
+#upper-display,
+#display {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: $displayRightPadding;
+}
+
+#upper-display {
+  color: $clearBtnColor;
+  font-size: 1.2em;
+}
+
+#display {
+  color: $primaryFontColor;
+  font-size: 2.2em;
+}
+
+.calc-button {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.7em;
+  cursor: pointer;
+  border: $displayBgColor solid 1px;
+  transition-duration: 0.15s;
+}
+
+.number,
+#decimal {
+  background-color: $numberColor;
+  color: $primaryFontColor;
+}
+
+.operator {
+  background-color: $operatorColor;
+  color: $primaryFontColor;
+}
+
+#clear {
+  background-color: $clearBtnColor;
+  color: $primaryFontColor;
+}
+
+.number:hover,
+#decimal:hover {
+  background-color: $primaryFontColor;
+  color: $numberColor;
+}
+
+.operator:hover {
+  background-color: $primaryFontColor;
+  color: $operatorColor;
+}
+
+#clear:hover {
+  background-color: $primaryFontColor;
+  color: $clearBtnColor;
+}
+
+.number:active,
+.operator:active,
+#decimal:active,
+#clear:active {
+  position: relative;
+  top: 1px;
+  opacity: 0.7;
+}
+
+@media screen and (max-height: 665px){
+  #container {
+    height: 90vh;
+  }
+}
