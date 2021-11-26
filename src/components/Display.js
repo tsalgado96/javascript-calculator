@@ -1,8 +1,8 @@
 function Display(props){
   return (
     <div id="display-container">
-      <div id="upper-display">{props.upperDisplayValue}</div>
-      <div id="display">{props.mainDisplayValue}</div>
+      <div id="upper-display">{props.previousOperand}</div>
+      <div id="display">{props.currentOperand}</div>
     </div>
   )
 }

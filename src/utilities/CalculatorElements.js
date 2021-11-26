@@ -54,7 +54,7 @@ export const calcElem = [
     id: 'clear'
   },
   {
-    value: '/',
+    value: '÷',
     id: 'divide',
     class: 'operator'
   },
