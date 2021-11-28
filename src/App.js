@@ -1,3 +1,5 @@
+/* eslint-disable default-case */
+/* eslint-disable no-eval */
 import React from 'react';
 import { calcElem } from './utilities/CalculatorElements';
 import Button from './components/Button';
@@ -8,14 +10,13 @@ class App extends React.Component {
     super(props);
     this.state = {
       currentOperand: '0',
-      previousOperand: ''
+      previousOperand: '',
+      operation: ''
     };
     this.handleClick = this.handleClick.bind(this);
-    this.evaluate = this.evaluate.bind(this);
   }
 
   handleClick(event) {
-    // eslint-disable-next-line default-case
     switch (event.target.id) {
       // NUMBERS
       case 'zero':
@@ -28,7 +29,10 @@ class App extends React.Component {
       case 'seven':
       case 'eight':
       case 'nine':
-        const parsedNum = document.getElementById(event.target.id).textContent;
+        let parsedNum = document.getElementById(event.target.id).textContent;
+        this.setState({
+          operation: ''
+        });
 
         if (this.state.currentOperand === '+' || this.state.currentOperand === '-' || this.state.currentOperand === 'x' || this.state.currentOperand === '÷') {
           this.setState({
@@ -68,57 +72,81 @@ class App extends React.Component {
 
       // OPERATIONS
       case 'add':
-        this.setState({
-          currentOperand: '+',
-          previousOperand: this.state.previousOperand.concat('+')
-        });
-        break;
       case 'subtract':
-        this.setState({
-          currentOperand: '-',
-          previousOperand: this.state.previousOperand.concat('-')
-        });
-        break;
       case 'multiply':
-        this.setState({
-          currentOperand: 'x',
-          previousOperand: this.state.previousOperand.concat('x')
-        });
-        break;
       case 'divide':
-        this.setState({
-          currentOperand: '÷',
-          previousOperand: this.state.previousOperand.concat('÷')
-        });
+        let prev = this.state.previousOperand;
+        let curr = this.state.currentOperand;
+        let value = document.getElementById(event.target.id).textContent;
+
+        if (event.target.id === 'subtract') {
+          if (prev === '') {
+            this.setState({
+              currentOperand: value,
+              previousOperand: value,
+              operation: value
+            });
+          } else if (this.state.operation.length < 2) {
+            this.setState({
+              currentOperand: value,
+              previousOperand: prev.concat(value),
+              operation: this.state.operation.concat(value)
+            });
+          }
+        } else if (!prev.substring(prev.length - 1).match(/\+|-|x|÷/)) {
+          if (prev.includes('=')) {
+            this.setState({
+              currentOperand: value,
+              previousOperand: curr + value,
+              operation: value
+            });
+          } else if (this.state.operation.length >= 2) {
+            this.setState({
+              currentOperand: value,
+              previousOperand: prev.substring(0, prev.length - 2).concat(value),
+              operation: value
+            });
+          } else {
+            this.setState({
+              currentOperand: value,
+              previousOperand: prev.concat(value),
+              operation: value
+            });
+          }
+        } else if (this.state.operation.length >= 2) {
+          console.log('TEST');
+          this.setState({
+            currentOperand: value,
+            previousOperand: prev.substring(0, prev.length - 2).concat(value),
+            operation: value
+          });
+        } else {
+          this.setState({
+            currentOperand: value,
+            previousOperand: prev.substring(0, prev.length - 1).concat(value),
+            operation: value
+          });
+        }
         break;
 
       // EQUALS
       case 'equals':
-        this.evaluate();
+        let evaluated = eval(this.state.previousOperand.replaceAll(/x/g, '*').replaceAll(/÷/g, '/'));
+        this.setState({
+          currentOperand: evaluated,
+          previousOperand: this.state.previousOperand.concat(`=${evaluated}`)
+        });
         break;
 
       // CLEAR
       case 'clear':
         this.setState({
           currentOperand: '0',
-          previousOperand: ''
+          previousOperand: '',
+          operation: ''
         });
         break;
     }
-  }
-
-  evaluate() {
-    // let str = this.state.previousOperand;
-    // let evalStr = str.replaceAll(/x/g, '*').replaceAll(/÷/g, '/');
-    let evaluated = eval(this.state.previousOperand.replaceAll(/x/g, '*').replaceAll(/÷/g, '/'));
-
-    this.setState({
-      currentOperand: evaluated,
-      previousOperand: this.state.previousOperand.concat(`=${evaluated}`)
-    });
-
-    // eslint-disable-next-line no-eval
-    console.log(evaluated);
   }
 
   render() {
