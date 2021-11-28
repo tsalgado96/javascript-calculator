@@ -14,6 +14,7 @@ class App extends React.Component {
       operation: ''
     };
     this.handleClick = this.handleClick.bind(this);
+    this.evaluate = this.evaluate.bind(this);
   }
 
   handleClick(event) {
@@ -39,7 +40,7 @@ class App extends React.Component {
             currentOperand: parsedNum,
             previousOperand: this.state.previousOperand.concat(parsedNum)
           });
-        } else if (this.state.currentOperand === '0' && parsedNum !== '0') {
+        } else if ((this.state.currentOperand === '0' && parsedNum !== '0') || this.state.previousOperand.includes('=')) {
           this.setState({
             currentOperand: parsedNum,
             previousOperand: parsedNum
@@ -54,10 +55,16 @@ class App extends React.Component {
 
       // DECIMAL
       case 'decimal':
-        if (!this.state.currentOperand.includes('.')) {
+        if (this.state.previousOperand.includes('=')) {
+          this.setState({
+            currentOperand: '0.',
+            previousOperand: '0.'
+          });
+        } else if (!this.state.currentOperand.toString().includes('.')) {
           if (this.state.previousOperand === '') {
             this.setState({
-              previousOperand: this.state.previousOperand.concat('0.')
+              currentOperand: '0.',
+              previousOperand: '0.'
             });
           } else {
             this.setState({
@@ -114,7 +121,6 @@ class App extends React.Component {
             });
           }
         } else if (this.state.operation.length >= 2) {
-          console.log('TEST');
           this.setState({
             currentOperand: value,
             previousOperand: prev.substring(0, prev.length - 2).concat(value),
@@ -131,11 +137,11 @@ class App extends React.Component {
 
       // EQUALS
       case 'equals':
-        let evaluated = eval(this.state.previousOperand.replaceAll(/x/g, '*').replaceAll(/÷/g, '/'));
-        this.setState({
-          currentOperand: evaluated,
-          previousOperand: this.state.previousOperand.concat(`=${evaluated}`)
-        });
+        if (this.state.previousOperand === '' || this.state.previousOperand.includes('=')) {
+          break;
+        } else {
+          this.evaluate();
+        }
         break;
 
       // CLEAR
@@ -147,6 +153,23 @@ class App extends React.Component {
         });
         break;
     }
+  }
+
+  evaluate() {
+    let prev = this.state.previousOperand;
+    if (this.state.operation !== '') {
+      if (this.state.operation.length < 2) {
+        prev = prev.substring(0, prev.length - 1);
+      } else {
+        prev = prev.substring(0, prev.length - 2);
+      }
+    }
+    let evaluated = eval(prev.replaceAll(/x/g, '*').replaceAll(/÷/g, '/')).toString();
+    this.setState({
+      currentOperand: evaluated,
+      previousOperand: prev.concat(`=${evaluated}`),
+      operation: ''
+    });
   }
 
   render() {
