@@ -93,6 +93,12 @@ class App extends React.Component {
               previousOperand: value,
               operation: value
             });
+          } else if (prev.includes('=')) {
+            this.setState({
+              currentOperand: curr + value,
+              previousOperand: curr + value,
+              operation: value
+            });
           } else if (this.state.operation.length < 2) {
             this.setState({
               currentOperand: value,
